@@ -1,0 +1,28 @@
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: medistock_database
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: medistock
+      POSTGRES_USER: medistock
+      POSTGRES_PASSWORD: medistock
+    ports:
+      - "5433:5432"
+    volumes:
+      - medistock_database_data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+
+  adminer:
+    image: adminer:latest
+    container_name: medistock_adminer
+    restart: unless-stopped
+    environment:
+      ADMINER_DEFAULT_SERVER: database
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
+
+volumes:
+  medistock_database_data:
